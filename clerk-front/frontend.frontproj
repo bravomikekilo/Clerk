@@ -1,0 +1,36 @@
+<Project DefaultTargets="Build">
+    <Sdk Name="Yarn.MSBuild" Version="1.22.0"></Sdk>
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+    </PropertyGroup>
+    <ItemGroup>
+        <Frontend Include="src/**/*"/>
+        <Frontend Include="public/**/*"/>
+        <Frontend Include="package.json;yarn.lock;babel.config.js;vue.config.js"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Dist Include="dist/**/*">
+            <RelativePath>%(Identity)</RelativePath>
+        </Dist>
+
+        <Dist Include="dist/index.html">
+            <RelativePath>%(Identity)</RelativePath>
+        </Dist>
+    </ItemGroup>
+
+
+    <Target Name="Build" Inputs="@(Frontend)" Outputs="@(Dist->'%(fullpath)')">
+        <Yarn Command="run build"/>
+    </Target>
+
+    <Target Name="Install" BeforeTargets="Build">
+        <Message Text="Yarn install start"  importance="high" />
+        <Yarn Command="install" Condition="! Exists('node_modules/')"></Yarn>
+        <Message Text="Yarn install finish"  importance="high" />
+    </Target>
+
+    <Target Name="Hello">
+        <Message Text="hello" importance="high"></Message>
+    </Target>
+</Project>
